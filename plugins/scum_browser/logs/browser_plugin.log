@@ -1,0 +1,26 @@
+2025-01-29 22:57:43,767 - INFO - Initializing ScumBrowserWidget
+2025-01-29 22:57:43,767 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 22:57:43,767 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
+2025-01-29 22:57:58,624 - INFO - Navigating to URL: https://youtube.com
+2025-01-29 22:59:50,463 - INFO - Initializing ScumBrowserWidget
+2025-01-29 22:59:50,464 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 22:59:50,464 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
+2025-01-29 23:02:32,909 - INFO - Initializing ScumBrowserWidget
+2025-01-29 23:02:32,909 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 23:02:32,909 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
+2025-01-29 23:05:57,350 - INFO - Initializing ScumBrowserWidget
+2025-01-29 23:05:57,352 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 23:05:57,352 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
+2025-01-29 23:10:55,211 - INFO - Initializing ScumBrowserWidget
+2025-01-29 23:10:55,213 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 23:10:55,213 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
+2025-01-29 23:13:31,181 - INFO - Initializing ScumBrowserWidget
+2025-01-29 23:13:31,183 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 23:13:31,183 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
+2025-01-29 23:13:40,604 - INFO - Navigating to URL: https://youtube.com
+2025-01-29 23:15:35,218 - INFO - Initializing ScumBrowserWidget
+2025-01-29 23:15:35,218 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 23:15:35,218 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
+2025-01-29 23:16:13,670 - INFO - Initializing ScumBrowserWidget
+2025-01-29 23:16:13,671 - INFO - ScumBrowserWidget initialized successfully
+2025-01-29 23:16:13,672 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
