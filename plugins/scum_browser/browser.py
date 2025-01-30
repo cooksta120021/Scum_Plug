@@ -2,11 +2,10 @@ import sys
 import traceback
 import logging
 import os
-
-# Explicitly use PyQt5 imports
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLineEdit, 
-                             QMessageBox, QApplication)
+                             QMessageBox, QApplication, QShortcut)
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtGui import QKeySequence
 from PyQt5.QtCore import QUrl, Qt
 
 # Set up logging
@@ -48,6 +47,12 @@ class ScumBrowserWidget(QWidget):
             # Set window title
             self.setWindowTitle("Scum Browser")
             
+            # Set initial zoom level
+            self.current_zoom = 1.0
+            
+            # Add zoom shortcuts
+            self.setup_zoom_shortcuts()
+            
             logging.info("ScumBrowserWidget initialized successfully")
         
         except Exception as e:
@@ -57,6 +62,34 @@ class ScumBrowserWidget(QWidget):
                                  f"Failed to initialize browser:\n{e}\n\n"
                                  f"Check log at {log_file} for details")
             raise
+    
+    def setup_zoom_shortcuts(self):
+        # Zoom in shortcut (Ctrl + +)
+        zoom_in_shortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Equal), self)
+        zoom_in_shortcut.activated.connect(self.zoom_in)
+        
+        # Zoom out shortcut (Ctrl + -)
+        zoom_out_shortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Minus), self)
+        zoom_out_shortcut.activated.connect(self.zoom_out)
+        
+        # Reset zoom shortcut (Ctrl + 0)
+        reset_zoom_shortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_0), self)
+        reset_zoom_shortcut.activated.connect(self.reset_zoom)
+    
+    def zoom_in(self):
+        self.current_zoom = min(5.0, self.current_zoom + 0.1)
+        self.web_view.setZoomFactor(self.current_zoom)
+        logging.info(f"Zoomed in. Current zoom: {self.current_zoom:.1f}")
+    
+    def zoom_out(self):
+        self.current_zoom = max(0.1, self.current_zoom - 0.1)
+        self.web_view.setZoomFactor(self.current_zoom)
+        logging.info(f"Zoomed out. Current zoom: {self.current_zoom:.1f}")
+    
+    def reset_zoom(self):
+        self.current_zoom = 1.0
+        self.web_view.setZoomFactor(self.current_zoom)
+        logging.info("Zoom reset to default")
     
     def navigate(self):
         try:

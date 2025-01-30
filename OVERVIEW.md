@@ -65,3 +65,39 @@ Scum Plug is a modular desktop application built with PyQt5, designed to provide
 
 ## Logging
 Detailed logs are maintained for each plugin in their respective `logs/` directories, aiding in debugging and tracking application behavior.
+
+## Packaging and Distribution
+
+### Creating an Executable with PyInstaller
+
+#### Prerequisites
+- Install dependencies: `pip install -r requirements.txt`
+
+#### Build Executable
+```bash
+# Basic build command
+pyinstaller --name="ScumPlug" \
+            --windowed \
+            --add-data "plugins:plugins" \
+            --add-data ".env:.env" \
+            --hidden-import=PyQt5.QtWidgets \
+            --hidden-import=PyQt5.QtCore \
+            --hidden-import=PyQt5.QtGui \
+            main.py
+```
+
+#### Build Options
+- `--name="ScumPlug"`: Sets the executable name
+- `--windowed`: Prevents console window from appearing
+- `--add-data "plugins:plugins"`: Includes all plugins
+- `--add-data ".env:.env"`: Includes environment configuration
+- `--hidden-import=...`: Ensures Qt libraries are bundled
+
+#### Troubleshooting
+- Verify all dependencies are installed
+- Check that plugins are correctly discovered
+- Test the executable thoroughly after packaging
+
+#### Distribution
+- Executable will be in the `dist/` directory
+- Distribute the entire `dist/ScumPlug` folder or executable
