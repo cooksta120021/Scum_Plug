@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+.env/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# PyInstaller
+*.spec
+
+# Dependency directories
+node_modules/
+
+# Temporary files
+*.swp
+*~
+
+# Sensitive information
+.env
+*.pem
+*.key

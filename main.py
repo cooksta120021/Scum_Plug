@@ -1,12 +1,18 @@
 import os
 import sys
 import traceback
+import requests
+import webbrowser
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, 
                              QPushButton, QMenu, QInputDialog, QMessageBox,
                              QSystemTrayIcon, QAction, QMainWindow, QStyle, QLabel, 
                              QSizePolicy)
 from PyQt5.QtCore import Qt, QMimeData, QPoint
 from PyQt5.QtGui import QIcon, QDrag
+
+# Current version of the application
+CURRENT_VERSION = "0.1.0"
+GITHUB_REPO = "cooksta120021/Scum_Plug"
 
 # Set OpenGL context sharing before creating QApplication
 import PyQt5.QtCore
@@ -156,6 +162,75 @@ class PluginButton(QPushButton):
                 }
             """)
 
+def check_for_updates():
+    try:
+        # GitHub Releases API URL (public, no authentication)
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+        
+        # Set a user agent to comply with GitHub API requirements
+        headers = {
+            'User-Agent': 'ScumPlug-Update-Checker'
+        }
+        
+        # Fetch latest release
+        response = requests.get(url, headers=headers)
+        
+        # Check if request was successful
+        if response.status_code == 200:
+            latest_release = response.json()
+            latest_version = latest_release['tag_name'].lstrip('v')
+            
+            # Compare versions
+            if latest_version > CURRENT_VERSION:
+                # Prepare update message
+                message = f"New version available!\n\n" \
+                          f"Current version: {CURRENT_VERSION}\n" \
+                          f"Latest version: {latest_version}\n\n" \
+                          f"Release Notes:\n{latest_release.get('body', 'No release notes available')}\n\n" \
+                          f"Would you like to download the update?"
+                
+                # Show update dialog
+                reply = QMessageBox.question(
+                    None, 
+                    "Update Available", 
+                    message, 
+                    QMessageBox.Yes | QMessageBox.No
+                )
+                
+                # Open release page if user wants to update
+                if reply == QMessageBox.Yes:
+                    webbrowser.open(latest_release['html_url'])
+            else:
+                # Show up-to-date message
+                QMessageBox.information(
+                    None, 
+                    "No Updates Available", 
+                    f"You are running the latest version ({CURRENT_VERSION})."
+                )
+        else:
+            # Handle API request failure
+            QMessageBox.warning(
+                None, 
+                "Update Check Failed", 
+                f"Could not check for updates. Status code: {response.status_code}\n"
+                "Please check your internet connection."
+            )
+    except requests.RequestException as e:
+        # Handle network-related errors
+        QMessageBox.warning(
+            None, 
+            "Network Error", 
+            f"A network error occurred:\n{str(e)}\n"
+            "Please check your internet connection."
+        )
+    except Exception as e:
+        # Handle any unexpected errors
+        QMessageBox.critical(
+            None, 
+            "Update Error", 
+            f"An unexpected error occurred:\n{str(e)}"
+        )
+
 class ScumPlug(QMainWindow):  # Changed to QMainWindow for taskbar visibility
     def __init__(self):
         super().__init__()
@@ -167,7 +242,7 @@ class ScumPlug(QMainWindow):  # Changed to QMainWindow for taskbar visibility
         
         # Configure main window
         self.setWindowTitle("ScumPlug Overlay")
-        self.setGeometry(100, 100, 400, 150)  # Wider initial size
+        self.setGeometry(100, 100, 400, 200)  # Slightly taller to accommodate update button
         
         # Ensure window stays on top and has standard window controls
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint | 
@@ -186,6 +261,25 @@ class ScumPlug(QMainWindow):  # Changed to QMainWindow for taskbar visibility
         self.plugin_layout = QHBoxLayout()
         self.plugin_layout.setSpacing(10)  # Space between buttons
         main_layout.addLayout(self.plugin_layout)
+        
+        # Create update button
+        self.update_button = QPushButton("Check for Updates")
+        self.update_button.clicked.connect(check_for_updates)
+        self.update_button.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(100, 150, 250, 230);
+                color: white;
+                border: 3px solid white;
+                border-radius: 15px;
+                font-weight: bold;
+                font-size: 14px;
+                text-transform: uppercase;
+            }
+            QPushButton:hover {
+                background-color: rgba(120, 170, 270, 250);
+            }
+        """)
+        main_layout.addWidget(self.update_button)
         
         # Load plugins
         self.load_plugins()
@@ -277,6 +371,15 @@ def main():
     
     # Start event loop
     sys.exit(app.exec_())
+
+# Ensure requests is installed
+try:
+    import requests
+except ImportError:
+    print("Installing required dependencies...")
+    import subprocess
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'requests'])
+    import requests
 
 if __name__ == '__main__':
     main()
