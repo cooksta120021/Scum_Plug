@@ -4,7 +4,7 @@ import logging
 import os
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLineEdit, 
                              QMessageBox, QApplication, QShortcut)
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings, QWebEnginePage
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtCore import QUrl, Qt
 
@@ -17,6 +17,23 @@ logging.basicConfig(
     level=logging.DEBUG, 
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+
+class CustomWebEnginePage(QWebEnginePage):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+    def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+        # Suppress specific non-critical warnings
+        suppressed_warnings = [
+            "A cookie associated with a cross-site resource",
+            "was preloaded using link preload but not used",
+            "A future release of Chrome will only deliver cookies"
+        ]
+        
+        # Check if the message contains any of the suppressed warnings
+        if not any(warning in message for warning in suppressed_warnings):
+            # Log only non-suppressed messages
+            logging.info(f"JS Console: {message}")
 
 class ScumBrowserWidget(QWidget):
     def __init__(self, parent=None):
@@ -34,8 +51,17 @@ class ScumBrowserWidget(QWidget):
             self.url_input.returnPressed.connect(self.navigate)
             layout.addWidget(self.url_input)
             
-            # Create web view
+            # Create web view with custom page
             self.web_view = QWebEngineView(self)
+            custom_page = CustomWebEnginePage(self.web_view)
+            self.web_view.setPage(custom_page)
+            
+            # Disable JavaScript warnings and non-critical console messages
+            settings = self.web_view.settings()
+            settings.setAttribute(QWebEngineSettings.JavascriptCanOpenWindows, False)
+            settings.setAttribute(QWebEngineSettings.JavascriptEnabled, True)
+            settings.setAttribute(QWebEngineSettings.AutoLoadImages, True)
+            
             layout.addWidget(self.web_view)
             
             # Set layout

@@ -109,3 +109,80 @@
 2025-01-30 02:00:26,356 - INFO - ScumBrowserWidget initialized successfully
 2025-01-30 02:00:26,356 - INFO - Created plugin widget: <class 'browser.ScumBrowserWidget'>
 2025-01-30 02:00:29,902 - DEBUG - Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2025-01-31 00:27:33,759 - INFO - Initializing ScumBrowserWidget
+2025-01-31 00:27:33,759 - INFO - ScumBrowserWidget initialized successfully
+2025-01-31 00:27:33,759 - INFO - Created plugin widget: <class 'scum_browser.ScumBrowserWidget'>
+2025-01-31 00:27:39,474 - INFO - Navigating to URL: https://youtube.com
+2025-01-31 00:27:46,140 - INFO - Zoomed out. Current zoom: 0.9
+2025-01-31 00:27:46,300 - INFO - Zoomed out. Current zoom: 0.8
+2025-01-31 00:27:47,020 - INFO - Zoomed in. Current zoom: 0.9
+2025-01-31 00:27:47,267 - INFO - Zoomed in. Current zoom: 1.0
+2025-01-31 00:29:39,530 - INFO - Initializing ScumBrowserWidget
+2025-01-31 00:29:39,533 - INFO - ScumBrowserWidget initialized successfully
+2025-01-31 00:29:39,533 - INFO - Created plugin widget: <class 'scum_browser.ScumBrowserWidget'>
+2025-01-31 00:29:45,433 - INFO - Navigating to URL: https://youtube.com
+2025-01-31 00:29:52,921 - INFO - Zoomed out. Current zoom: 0.9
+2025-01-31 00:29:53,064 - INFO - Zoomed out. Current zoom: 0.8
+2025-01-31 00:29:53,754 - INFO - Zoomed in. Current zoom: 0.9
+2025-01-31 00:29:53,943 - INFO - Zoomed in. Current zoom: 1.0
+2025-01-31 00:32:14,145 - INFO - Initializing ScumBrowserWidget
+2025-01-31 00:32:14,187 - INFO - ScumBrowserWidget initialized successfully
+2025-01-31 00:32:14,187 - INFO - Created plugin widget: <class 'scum_browser.ScumBrowserWidget'>
+2025-01-31 01:40:32,189 - INFO - Successfully imported plugin: scum_browser
+2025-01-31 01:40:32,191 - INFO - Social Plugin Import module initialized
+2025-01-31 01:40:32,191 - INFO - Log file created at: D:\Projects\Random-Scripts\plugin_project\plugins\social_network\logs\social_plugin_import.log
+2025-01-31 01:40:32,191 - INFO - Python Paths:
+2025-01-31 01:40:32,191 - INFO -   - D:\Projects\Random-Scripts\plugin_project\plugins\social_network\social_network_impl
+2025-01-31 01:40:32,191 - INFO -   - D:\Projects\Random-Scripts\plugin_project\plugins\social_network
+2025-01-31 01:40:32,191 - INFO -   - plugins\social_network
+2025-01-31 01:40:32,191 - INFO -   - plugins\scum_browser
+2025-01-31 01:40:32,191 - INFO -   - D:\Projects\Random-Scripts\plugin_project
+2025-01-31 01:40:32,191 - INFO -   - C:\Program Files\Python311\python311.zip
+2025-01-31 01:40:32,191 - INFO -   - C:\Program Files\Python311\Lib
+2025-01-31 01:40:32,191 - INFO -   - C:\Program Files\Python311\DLLs
+2025-01-31 01:40:32,191 - INFO -   - C:\Users\cooks\AppData\Roaming\Python\Python311\site-packages
+2025-01-31 01:40:32,191 - INFO -   - C:\Program Files\Python311
+2025-01-31 01:40:32,191 - INFO -   - C:\Program Files\Python311\Lib\site-packages
+2025-01-31 01:40:32,191 - INFO - Direct import failed. Attempting to load from: D:\Projects\Random-Scripts\plugin_project\plugins\social_network\social_network_impl\social_network.py
+2025-01-31 01:40:32,191 - INFO - Attempting to load module social_network from D:\Projects\Random-Scripts\plugin_project\plugins\social_network\social_network_impl\social_network.py
+2025-01-31 01:40:32,198 - INFO - Social Network Plugin module initialized
+2025-01-31 01:40:32,198 - INFO - Log file created at: D:\Projects\Random-Scripts\plugin_project\plugins\social_network\logs\social_network.log
+2025-01-31 01:40:32,814 - DEBUG - Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2025-01-31 01:40:32,815 - INFO - Successfully loaded create_plugin via dynamic loading
+2025-01-31 01:40:32,815 - INFO - Social Network Plugin loaded successfully
+2025-01-31 01:40:32,815 - INFO - create_plugin function: <function create_plugin at 0x000001468161E0C0>
+2025-01-31 01:40:32,815 - INFO - Successfully imported plugin: social_network
+2025-01-31 01:40:32,817 - INFO - Application Startup Initiated
+2025-01-31 01:40:32,817 - INFO - Python Version: 3.11.0 (main, Oct 24 2022, 18:26:48) [MSC v.1933 64 bit (AMD64)]
+2025-01-31 01:40:32,817 - INFO - Python Executable: C:\Program Files\Python311\python.exe
+2025-01-31 01:40:32,817 - INFO - Current Working Directory: D:\Projects\Random-Scripts\plugin_project
+2025-01-31 01:40:32,817 - INFO - Python Path: ['D:\\Projects\\Random-Scripts\\plugin_project\\plugins\\social_network', 'D:\\Projects\\Random-Scripts\\plugin_project\\plugins\\social_network\\social_network_impl', 'D:\\Projects\\Random-Scripts\\plugin_project\\plugins\\social_network', 'plugins\\social_network', 'plugins\\scum_browser', 'D:\\Projects\\Random-Scripts\\plugin_project', 'C:\\Program Files\\Python311\\python311.zip', 'C:\\Program Files\\Python311\\Lib', 'C:\\Program Files\\Python311\\DLLs', 'C:\\Users\\cooks\\AppData\\Roaming\\Python\\Python311\\site-packages', 'C:\\Program Files\\Python311', 'C:\\Program Files\\Python311\\Lib\\site-packages']
+2025-01-31 01:46:02,123 - INFO - Successfully imported plugin: scum_browser
+2025-01-31 01:46:02,126 - INFO - Social Plugin Import module initialized
+2025-01-31 01:46:02,126 - INFO - Log file created at: D:\Projects\Random-Scripts\plugin_project\plugins\social_network\logs\social_plugin_import.log
+2025-01-31 01:46:02,126 - INFO - Python Paths:
+2025-01-31 01:46:02,126 - INFO -   - D:\Projects\Random-Scripts\plugin_project\plugins\social_network\social_network_impl
+2025-01-31 01:46:02,126 - INFO -   - D:\Projects\Random-Scripts\plugin_project\plugins\social_network
+2025-01-31 01:46:02,126 - INFO -   - plugins\social_network
+2025-01-31 01:46:02,126 - INFO -   - plugins\scum_browser
+2025-01-31 01:46:02,126 - INFO -   - D:\Projects\Random-Scripts\plugin_project
+2025-01-31 01:46:02,126 - INFO -   - C:\Program Files\Python311\python311.zip
+2025-01-31 01:46:02,126 - INFO -   - C:\Program Files\Python311\Lib
+2025-01-31 01:46:02,126 - INFO -   - C:\Program Files\Python311\DLLs
+2025-01-31 01:46:02,129 - INFO -   - C:\Users\cooks\AppData\Roaming\Python\Python311\site-packages
+2025-01-31 01:46:02,129 - INFO -   - C:\Program Files\Python311
+2025-01-31 01:46:02,129 - INFO -   - C:\Program Files\Python311\Lib\site-packages
+2025-01-31 01:46:02,129 - INFO - Direct import failed. Attempting to load from: D:\Projects\Random-Scripts\plugin_project\plugins\social_network\social_network_impl\social_network.py
+2025-01-31 01:46:02,129 - INFO - Attempting to load module social_network from D:\Projects\Random-Scripts\plugin_project\plugins\social_network\social_network_impl\social_network.py
+2025-01-31 01:46:02,135 - INFO - Social Network Plugin module initialized
+2025-01-31 01:46:02,135 - INFO - Log file created at: D:\Projects\Random-Scripts\plugin_project\plugins\social_network\logs\social_network.log
+2025-01-31 01:46:02,704 - DEBUG - Converted retries value: 3 -> Retry(total=3, connect=None, read=None, redirect=None, status=None)
+2025-01-31 01:46:02,704 - INFO - Successfully loaded create_plugin via dynamic loading
+2025-01-31 01:46:02,704 - INFO - Social Network Plugin loaded successfully
+2025-01-31 01:46:02,704 - INFO - create_plugin function: <function create_plugin at 0x0000018A50BDA020>
+2025-01-31 01:46:02,704 - INFO - Successfully imported plugin: social_network
+2025-01-31 01:46:02,705 - INFO - Application Startup Initiated
+2025-01-31 01:46:02,705 - INFO - Python Version: 3.11.0 (main, Oct 24 2022, 18:26:48) [MSC v.1933 64 bit (AMD64)]
+2025-01-31 01:46:02,705 - INFO - Python Executable: C:\Program Files\Python311\python.exe
+2025-01-31 01:46:02,705 - INFO - Current Working Directory: D:\Projects\Random-Scripts\plugin_project
+2025-01-31 01:46:02,705 - INFO - Python Path: ['D:\\Projects\\Random-Scripts\\plugin_project\\plugins\\social_network', 'D:\\Projects\\Random-Scripts\\plugin_project\\plugins\\social_network\\social_network_impl', 'D:\\Projects\\Random-Scripts\\plugin_project\\plugins\\social_network', 'plugins\\social_network', 'plugins\\scum_browser', 'D:\\Projects\\Random-Scripts\\plugin_project', 'C:\\Program Files\\Python311\\python311.zip', 'C:\\Program Files\\Python311\\Lib', 'C:\\Program Files\\Python311\\DLLs', 'C:\\Users\\cooks\\AppData\\Roaming\\Python\\Python311\\site-packages', 'C:\\Program Files\\Python311', 'C:\\Program Files\\Python311\\Lib\\site-packages']

@@ -195,9 +195,6 @@ def create_plugin(button=None):
     if not app:
         app = QApplication([])
     
-    # Import the SocialNetworkWidget here to avoid circular import
-    from social_network import SocialNetworkWidget
-    
     # Create widget
     widget = SocialNetworkWidget()
     
