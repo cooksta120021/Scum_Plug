@@ -1,56 +1,48 @@
 @echo off
-SETLOCAL ENABLEDELAYEDEXPANSION
+setlocal enabledelayedexpansion
 
-REM Check if Git is installed
-where git >nul 2>nul
-if %ERRORLEVEL% NEQ 0 (
-    echo Error: Git is not installed or not in PATH.
-    echo Please install Git from https://git-scm.com/download/win
-    pause
-    exit /b 1
-)
-
-REM Check if Python is installed
+:: Check for Python
 where python >nul 2>nul
-if %ERRORLEVEL% NEQ 0 (
-    echo Error: Python is not installed or not in PATH.
-    echo Please install Python from https://www.python.org/downloads/windows/
+if %errorlevel% neq 0 (
+    echo Python not found. Please install Python 3.8+ from python.org
     pause
     exit /b 1
 )
 
-REM Remove existing directory if it exists to prevent conflicts
-if exist Scum_Plug (
-    rmdir /s /q Scum_Plug
-)
+:: Verify Python version
+for /f "delims=" %%V in ('python --version 2^>^&1') do set "PYTHON_VERSION=%%V"
+echo Detected %PYTHON_VERSION%
 
-REM Clone the repository
-git clone https://github.com/cooksta120021/Scum_Plug.git
-if %ERRORLEVEL% NEQ 0 (
-    echo Error: Failed to clone repository.
+:: Check Python version (basic check)
+python -c "import sys; exit(0) if sys.version_info >= (3, 8) else exit(1)" 2>nul
+if %errorlevel% neq 0 (
+    echo Python 3.8+ is required. Current version is insufficient.
     pause
     exit /b 1
 )
 
-REM Change to project directory
-cd Scum_Plug
+:: Create virtual environment
+if not exist project_venv (
+    echo Creating virtual environment...
+    python -m venv project_venv
+    if %errorlevel% neq 0 (
+        echo Failed to create virtual environment.
+        pause
+        exit /b 1
+    )
+)
 
-REM Create virtual environment
-python -m venv project_venv
-if %ERRORLEVEL% NEQ 0 (
-    echo Error: Failed to create virtual environment.
+:: Activate virtual environment and install dependencies
+call project_venv\Scripts\activate.bat
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+if %errorlevel% neq 0 (
+    echo Failed to install dependencies.
     pause
     exit /b 1
 )
 
-REM Activate virtual environment and install dependencies
-call project_venv\Scripts\activate
-pip install -r requirements.txt
-if %ERRORLEVEL% NEQ 0 (
-    echo Error: Failed to install dependencies.
-    pause
-    exit /b 1
-)
-
+:: Successful installation
 echo Installation completed successfully!
 pause
+exit /b 0
