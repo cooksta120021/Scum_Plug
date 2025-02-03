@@ -10,6 +10,7 @@ import json
 import argparse
 import logging
 import traceback
+import threading
 
 try:
     import mido
@@ -27,14 +28,13 @@ class ScumBardError(Exception):
 class ScumBard:
     def __init__(self, midi_file=None, track=0, keymap_path=None, log_level=logging.INFO):
         """
-        Initialize ScumBard MIDI player
+        Initialize ScumBard MIDI player with updated keymap
         
         :param midi_file: Path to MIDI file
         :param track: Track number to play (default 0)
         :param keymap_path: Custom keymap JSON file
         :param log_level: Logging level
         """
-        # Configure logging
         logging.basicConfig(
             level=log_level, 
             format='%(asctime)s - %(levelname)s: %(message)s',
@@ -45,18 +45,27 @@ class ScumBard:
         )
         self.logger = logging.getLogger(__name__)
         
-        # Validate input file
         if not midi_file or not os.path.exists(midi_file):
             raise ScumBardError(f"MIDI file not found: {midi_file}")
         
         self.midi_file = midi_file
         self.track = track
         
-        # Default keymap
+        # Updated keymap matching the specified mapping
         default_keymap = {
-            "c": "e", "c#": "4", "d": "r", "d#": "5", 
-            "e": "t", "f": "y", "f#": "7", "g": "u", 
-            "g#": "8", "a": "i", "a#": "9", "b": "0"
+            "c": "z",    # Low C
+            "c#": "5",   # C#
+            "d": "u",    # D
+            "d#": "6",   # D#
+            "e": "i",    # E
+            "f": "o",    # F
+            "f#": "7",   # F#
+            "g": "h",    # G
+            "g#": "8",   # G#
+            "a": "j",    # A
+            "a#": "9",   # A#
+            "b": "k",    # B
+            "c_high": "l"  # High C
         }
         
         # Load custom keymap if provided
@@ -71,6 +80,46 @@ class ScumBard:
         except json.JSONDecodeError:
             self.logger.error(f"Invalid keymap file: {keymap_path}")
             self.keymap = default_keymap
+
+    def reset_character_octave(self):
+        """
+        Reset character to neutral octave
+        """
+        # Specific reset method can be added if needed
+        self.logger.info("Reset character octave")
+
+    def shift_octave(self, target_octave, current_octave):
+        """
+        Shift octave up or down
+        
+        :param target_octave: Desired octave
+        :param current_octave: Current octave
+        """
+        if target_octave > current_octave:
+            # Shift up with Left Shift
+            for _ in range(target_octave - current_octave):
+                pyautogui.press('shift')
+                self.logger.info(f"Shifted octave up to {target_octave}")
+        elif target_octave < current_octave:
+            # Shift down with Left Ctrl
+            for _ in range(current_octave - target_octave):
+                pyautogui.press('ctrl')
+                self.logger.info(f"Shifted octave down to {target_octave}")
+
+    def get_first_octave(self, track):
+        """
+        Determine the first octave of the track
+        
+        :param track: MIDI track to analyze
+        :return: Base octave of the track
+        """
+        octaves = []
+        for msg in track:
+            if not msg.is_meta and msg.type == 'note_on' and msg.velocity > 0:
+                octave = (msg.note // 12) - 1
+                octaves.append(octave)
+        
+        return min(octaves) if octaves else 3  # Default to octave 3 if no notes found
 
     def list_tracks(self):
         """
@@ -89,45 +138,164 @@ class ScumBard:
         """
         Play MIDI file using keyboard mapping
         """
+        print(f"Total track messages: {len(mido.MidiFile(self.midi_file).tracks[self.track])}")
+        print(f"Current Keymap: {self.keymap}")
+        
         try:
             midi = mido.MidiFile(self.midi_file)
             track = midi.tracks[self.track]
-            self.logger.info(f"Playing track {self.track} from {self.midi_file}")
+            print(f"Playing track {self.track} from {self.midi_file}")
 
             def midi_to_note_name(midi_number):
                 """Convert MIDI note number to note name"""
                 notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b']
                 octave = (midi_number // 12) - 1
                 note_index = midi_number % 12
-                return f"{notes[note_index]}{octave}"
+                
+                # Special handling for high C
+                if notes[note_index] == 'c' and octave > 3:
+                    return 'c_high'
+                
+                return notes[note_index]
 
-            # Use threading to prevent blocking
-            import threading
-
+            # Collect ALL unique notes in the track
+            all_notes = {}
+            
+            for msg in track:
+                if not msg.is_meta:
+                    if msg.type in ['note_on', 'note_off'] and msg.velocity > 0:
+                        note_name = midi_to_note_name(msg.note)
+                        note_without_octave = ''.join([c for c in note_name if c.isalpha() or c == '#'])
+                        
+                        if note_name not in all_notes:
+                            all_notes[note_name] = {
+                                'full_name': note_name,
+                                'without_octave': note_without_octave,
+                                'midi_number': msg.note,
+                                'mapped_key': self.keymap.get(note_without_octave, 'NO MAPPING'),
+                                'count': 1
+                            }
+                        else:
+                            all_notes[note_name]['count'] += 1
+            
+            # Print out ALL unique notes and their mappings
+            print("\n--- ALL UNIQUE NOTES IN THE TRACK ---")
+            for note, details in sorted(all_notes.items(), key=lambda x: x[1]['midi_number']):
+                print(f"Note: {note}, MIDI Number: {details['midi_number']}, "
+                      f"Mapped Key: {details['mapped_key']}, "
+                      f"Occurrences: {details['count']}")
+            
+            print("\n--- NOTES THAT WILL BE PLAYED ---")
+            # Actual playback logic
             def playback_thread():
-                # 5-second delay before starting
-                self.logger.info("Waiting 5 seconds before starting MIDI playback...")
-                time.sleep(5)
-                self.logger.info("Starting MIDI playback")
+                note_count = 0
+                key_press_count = 0
 
-                for msg in track:
-                    if not msg.is_meta:
-                        if msg.type == 'note_on' and msg.velocity > 0:
-                            note_name = midi_to_note_name(msg.note).lower()
-                            
-                            if note_name in self.keymap:
-                                key = self.keymap[note_name]
-                                self.logger.debug(f"Pressing key: {key} for note: {note_name}")
-                                pyautogui.press(key)
-                    
-                    # Control playback speed
-                    time.sleep(msg.time * 0.1)  # Slow down playback
+                try:
+                    for msg in track:
+                        if not msg.is_meta:
+                            if msg.type == 'note_on' and msg.velocity > 0:
+                                note_name = midi_to_note_name(msg.note)
+                                note_count += 1
+                                
+                                # Strip octave for keymap lookup
+                                note_without_octave = ''.join([c for c in note_name if c.isalpha() or c == '#'])
+                                
+                                if note_without_octave in self.keymap:
+                                    key = self.keymap[note_without_octave]
+                                    
+                                    try:
+                                        pyautogui.press(key)
+                                        key_press_count += 1
+                                        print(f"Pressed key: {key} for note: {note_name}")
+                                    except Exception as press_error:
+                                        print(f"Failed to press key {key}: {press_error}")
+                                else:
+                                    print(f"No key mapping for note: {note_name}")
 
-                self.logger.info("MIDI playback completed successfully")
+                        # Slow down to make key presses observable
+                        time.sleep(msg.time * 0.1)  # Slow down playback
+
+                    print(f"MIDI playback completed. Total Notes: {note_count}, Key Presses: {key_press_count}")
+
+                except Exception as playback_error:
+                    print(f"Error during MIDI playback: {playback_error}")
+                    import traceback
+                    traceback.print_exc()
 
             # Start playback in a separate thread
             thread = threading.Thread(target=playback_thread)
             thread.start()
+            thread.join()  # Wait for thread to complete
+
+        except Exception as e:
+            print(f"Error preparing MIDI playback: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def play_midi_with_octave_management(self):
+        """
+        Play MIDI file with octave management
+        """
+        try:
+            midi = mido.MidiFile(self.midi_file)
+            track = midi.tracks[self.track]
+            
+            # Determine first octave
+            first_octave = self.get_first_octave(track)
+            current_octave = first_octave
+            
+            self.logger.info(f"First track octave: {first_octave}")
+            
+            # Reset to base octave
+            self.reset_character_octave()
+
+            def midi_to_note_name(midi_number):
+                """Convert MIDI note number to note name"""
+                notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b']
+                octave = (midi_number // 12) - 1
+                note_index = midi_number % 12
+                
+                # Special handling for high C
+                if notes[note_index] == 'c' and octave > 3:
+                    return 'c_high'
+                
+                return notes[note_index]
+
+            def playback_thread():
+                nonlocal current_octave
+                note_count = 0
+                key_press_count = 0
+
+                for msg in track:
+                    if not msg.is_meta and msg.type == 'note_on' and msg.velocity > 0:
+                        note_name = midi_to_note_name(msg.note)
+                        note_octave = (msg.note // 12) - 1
+                        
+                        # Shift octave if needed
+                        if note_octave != current_octave:
+                            self.shift_octave(note_octave, current_octave)
+                            current_octave = note_octave
+                        
+                        if note_name in self.keymap:
+                            key = self.keymap[note_name]
+                            
+                            try:
+                                pyautogui.press(key)
+                                key_press_count += 1
+                                self.logger.info(f"Pressed key: {key} for note: {note_name} (Octave: {note_octave})")
+                            except Exception as press_error:
+                                self.logger.error(f"Failed to press key {key}: {press_error}")
+                        
+                        note_count += 1
+                        time.sleep(msg.time * 0.1)  # Maintain original timing
+
+                self.logger.info(f"MIDI playback completed. Total Notes: {note_count}, Key Presses: {key_press_count}")
+
+            # Start playback
+            thread = threading.Thread(target=playback_thread)
+            thread.start()
+            thread.join()
 
         except Exception as e:
             self.logger.error(f"Error playing MIDI: {e}")
@@ -217,7 +385,7 @@ def create_plugin(button=None):
                 
                 try:
                     bard = ScumBard(self.midi_file)
-                    bard.play_midi()
+                    bard.play_midi_with_octave_management()
                     self.status_label.setText(f"Playing: {self.midi_file}")
                 except Exception as e:
                     QMessageBox.critical(
@@ -263,7 +431,7 @@ def main():
         if args.list_tracks:
             bard.list_tracks()
         else:
-            bard.play_midi()
+            bard.play_midi_with_octave_management()
 
     except ScumBardError as e:
         print(f"Scum Bard Error: {e}")
